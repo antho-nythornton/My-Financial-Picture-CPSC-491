@@ -9,7 +9,8 @@ body {
     background-color: rgba(15, 38, 63, 0.8);
     border-radius: 18px;
     border: 15px solid rgb(255, 255, 255);
-    padding: 80px;
+    border-style:solid;
+    padding: 90px;
 }
 
 h1 {
@@ -50,10 +51,9 @@ input:not([type="submit"]) {
 }
 
 button {
-  background-color: white;
-  border: 5 solid #aaa;
-  border-radius: 5px;
-  color: black;
+  border-style:double;
+  border-width: 5px;
+  border-radius: 10px;
   font-family: sans-serif;
   font-size: 18px;
   padding: 10px 20px;
