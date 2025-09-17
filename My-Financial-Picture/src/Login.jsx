@@ -5,9 +5,9 @@ function Login() {
       <h2>Login</h2>
       <div className="Login-container">
         <div className="login">
-          <label htmlFor="email" style={{ color: 'white' }}>Email</label><br />
+          <label htmlFor="email" style={{ color: 'black' }}>Email</label><br />
           <input type="email" id="email" placeholder="Enter your email" /><br />
-          <label htmlFor="password" style={{ color: 'white' }}>Password</label><br />
+          <label htmlFor="password" style={{ color: 'black' }}>Password</label><br />
           <input type="password" id="password" placeholder="Enter your password" /><br />
         </div>
         <button id="submitButton" type="button">
