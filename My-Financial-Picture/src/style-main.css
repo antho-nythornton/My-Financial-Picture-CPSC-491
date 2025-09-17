@@ -82,3 +82,11 @@ button {
             transform: translateY(0px);
         }
     }
+
+.nav {
+  display: flex;
+  border-radius: 18px;
+  align-items: center;
+  margin: 20px;
+  justify-content: space-evenly;
+}
