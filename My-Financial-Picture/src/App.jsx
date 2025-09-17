@@ -3,7 +3,7 @@ import Login from './Login'
 import Dashboard from './Dashboard'
 import About from './About'
 import Navigation from './Navigation'
-//import Started from './Started'
+import Started from './Started'
 
 function App() {
   return (
