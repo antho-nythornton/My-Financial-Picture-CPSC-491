@@ -1,3 +1,5 @@
+import {Link} from 'react-router-dom'
+import './Login.css'
 function Login() {
   return (
     <div className="container">
@@ -13,6 +15,9 @@ function Login() {
         <button id="submitButton" type="button">
           Submit
         </button>
+        <div className="container-link">
+          <Link to="/started">Create and account</Link>
+        </div>
       </div>
     </div>
   )

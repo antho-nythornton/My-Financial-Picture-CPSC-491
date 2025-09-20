@@ -3,7 +3,7 @@ import Login from './Login'
 import Dashboard from './Dashboard'
 import About from './About'
 import Navigation from './Navigation'
-//import Started from './Started'
+import Started from './Started'
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/about" element={<About />} />
-      {/* <Route path="/Create Account" element={<Started />} /> */}
+      <Route path="/started" element={<Started />} />
     </Routes>
     </>
   )

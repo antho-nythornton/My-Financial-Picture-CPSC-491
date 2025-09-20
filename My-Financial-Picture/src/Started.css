@@ -1,0 +1,58 @@
+h1 {
+    font-size: 2.5em;
+    color: black;
+}
+
+p1 {
+    font-family: Google Sans, sans-serif;
+    color: black;
+    font-size: 25px;
+    font-weight: lighter;
+}
+
+#email {
+    border-radius: 15px;
+    width: 500px;
+}
+
+label{
+    color: black;
+    font-weight: lighter;
+}
+
+.password-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.password-container input{
+    border-radius: 15px;
+    width: 240px;
+}
+
+#phone {
+    display: flex;
+    border-radius: 15px;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+.container-link {
+    display: flexbox;
+    padding-top: 10px;
+}
+
+.container-link:hover {
+    border-color: #040a77;
+    text-decoration: underline;
+}

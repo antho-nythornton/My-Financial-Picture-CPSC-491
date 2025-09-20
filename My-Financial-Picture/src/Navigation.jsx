@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom';
       return (
         <div className='nav'>
             <Link to="/">Login</Link>
-            <Link to="/Dashboard">Dashboard</Link>
+            <Link to="/dashboard">Dashboard</Link>
             <Link to="/about">About</Link>
-            {/* <Link to="/started">Started</Link> */}
         </div>
       );
     }
