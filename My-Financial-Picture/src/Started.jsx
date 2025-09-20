@@ -1,4 +1,5 @@
 import './Started.css';
+import {Link} from 'react-router-dom';
 
 function Started() {
   return (
@@ -22,7 +23,12 @@ function Started() {
           <label htmlFor="phone">Phone Number</label>
           <input type="tel" id="phone" placeholder="(123) - 456 - 7890" /><br></br>
         </div>
-        <button id= "button" type="button" style={{ width: '100%', alignItems: 'center' }}>Sign up</button>
+        <div>
+          <button id= "button" type="button" style={{ width: '100%', alignItems: 'center' }}>Sign up</button>
+        </div>
+        <div className="container-link">
+          <Link to="/">Continue to Login Page</Link>
+        </div>
       </div>
     </div>
   )
