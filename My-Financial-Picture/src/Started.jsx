@@ -6,7 +6,7 @@ function Started() {
     <div className="login-page">
     <div className="container">
       <h1>Get Started</h1>
-      <p1>Sign Up for a free account</p1><br /><br />
+      <p>Sign Up for a free account</p><br /><br />
       <div className="SignUp-container">
         <div className="SignUp">
           <label htmlFor="email" id ="email" >Email</label>
