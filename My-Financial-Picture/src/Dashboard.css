@@ -1,0 +1,145 @@
+#root {
+    color: black;
+    background-color: #d6e6f2;
+}
+
+.dashboard {
+padding: 2rem;
+  margin-top: 0;
+  min-height: 100vh;
+  overflow: auto;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;  
+  padding: 0 2rem;   
+}
+
+.dashboard-header h1 {
+  color: #111827;
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+.dashboard-header p {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.summary-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.summary-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.summary-card h3 {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+.summary-card .value {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.summary-card .value.spent {
+  color: #b91c1c;
+}
+.trend {
+  font-size: 0.9rem;
+}
+.trend.positive {
+  color: #16a34a;
+}
+.trend.negative {
+  color: #b91c1c;
+}
+
+.charts-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.chart-box {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.chart-placeholder {
+  background: #f3f4f6;
+  height: 150px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.category-list li {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+.category-list .bar {
+  display: inline-block;
+  height: 6px;
+  background: #3b82f6;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.transactions {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.transaction {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.transaction .amount {
+  font-weight: bold;
+}
+.transaction .amount.positive {
+  color: #16a34a;
+}
+
+.notifications {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.notification {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+/* Buttons */
+.view-all {
+  margin-top: 0.5rem;
+  background: #f3f4f6;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.view-all:hover {
+  background: #e5e7eb;
+}
