@@ -16,7 +16,7 @@ function Login() {
           Submit
         </button>
         <div className="container-link">
-          <Link to="/started">Create and account</Link>
+          <Link to="/started">Create an account</Link>
         </div>
       </div>
     </div>
