@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 
 function Started() {
   return (
+    <div className="login-page">
     <div className="container">
       <h1>Get Started</h1>
       <p1>Sign Up for a free account</p1><br /><br />
@@ -30,6 +31,7 @@ function Started() {
           <Link to="/">Continue to Login Page</Link>
         </div>
       </div>
+    </div>
     </div>
   )
 }
