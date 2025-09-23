@@ -40,7 +40,7 @@ describe('Auth navigation', () => {
     // Click "Continue to Login Page"
     await userEvent.click(screen.getByText(/continue to login page/i))
 
-    // Should land back on login page (again, be specific)
+    // Should land back on login page
     expect(
       screen.getByRole('heading', { level: 2, name: /login/i })
     ).toBeInTheDocument()
