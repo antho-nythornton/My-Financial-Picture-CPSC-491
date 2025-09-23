@@ -7,3 +7,38 @@
     border-color: #040a77;
     text-decoration: underline;
 }
+
+#submitButton {
+    color: white;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #032d5b;
+}
+
+@scope (.Login-container) {
+#email { 
+    border-radius: 15px;
+    width: 500px;
+    border-style: solid;
+}
+
+#password {
+    border-radius: 15px;
+    width: 500px;
+    border-style: solid;
+}
+}
+.container-link {
+    font-size: 25px;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    border-width: 0cap;
+    gap: 10px ;
+}
+
+.container-link:hover {
+    text-decoration: underline;
+}

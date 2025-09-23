@@ -5,6 +5,7 @@ import './index.css'
 import './style-main.css'
 import App from './App.jsx'
 import Started from './Started.jsx'
+import reset_password from './reset_password.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

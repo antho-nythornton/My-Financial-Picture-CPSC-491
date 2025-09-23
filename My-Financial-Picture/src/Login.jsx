@@ -13,10 +13,11 @@ function Login() {
           <input type="password" id="password" placeholder="Enter your password" /><br />
         </div>
         <button id="submitButton" type="button">
-          Submit
+          Login
         </button>
         <div className="container-link">
           <Link to="/started">Create an account</Link>
+          <Link to="/reset_password">Forgot Password?</Link>
         </div>
       </div>
     </div>

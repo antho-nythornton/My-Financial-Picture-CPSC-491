@@ -1,8 +1,11 @@
 h1 {
-    font-size: 2.5em;
     color: black;
 }
-
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 p1 {
     font-family: Google Sans, sans-serif;
     color: black;
@@ -10,20 +13,19 @@ p1 {
     font-weight: lighter;
 }
 
-#email {
-    border-radius: 15px;
-    width: 500px;
-}
-
 label{
     color: black;
     font-weight: lighter;
 }
-
+input {
+    border-radius: 15px;
+    width: 500px;
+    border-style: solid;
+}
 .password-container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    justify-content: center;
     gap: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -31,23 +33,19 @@ label{
 
 .password-container input{
     border-radius: 15px;
-    width: 240px;
+    width: 500px;
 }
 
 #phone {
     display: flex;
+    align-items: center;
+    display: flex;
     border-radius: 15px;
 }
 
-.submit-button {
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-
-}
 
 .container-link {
+    justify-content: center;
     display: flexbox;
     padding-top: 10px;
 }
@@ -56,3 +54,4 @@ label{
     border-color: #040a77;
     text-decoration: underline;
 }
+
