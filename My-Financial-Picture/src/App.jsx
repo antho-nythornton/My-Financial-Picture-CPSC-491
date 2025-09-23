@@ -4,6 +4,7 @@ import Dashboard from './Dashboard'
 import About from './About'
 import Navigation from './Navigation'
 import Started from './Started'
+import Reset_password from './reset_password'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/about" element={<About />} />
       <Route path="/started" element={<Started />} />
+      <Route path="/Reset_password" element={<Reset_password />} />
     </Routes>
     </>
   )
