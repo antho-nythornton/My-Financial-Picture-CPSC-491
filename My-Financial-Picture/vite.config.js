@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+const isGhPages = !!process.env.GITHUB_PAGES
+const base = isGhPages ? '/My-Financial-Picture-CPSC-491/' : '/'
+
 export default defineConfig({
   plugins: [react()],
   test: {
