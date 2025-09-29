@@ -1,36 +1,75 @@
+import { useState } from "react";
 import './Started.css';
 import {Link} from 'react-router-dom';
+import Login from './Login'
+
 
 function Started() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // Step 2: Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: phone, // or use a separate username field if you have one
+          email: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Account created successfully!");
+        window.location.href = "/Login";
+      } else {
+        alert(`Error: ${data.detail}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
   return (
     <div className="login-page">
     <div className="container">
       <h1>Get Started</h1>
       <p>Sign Up for a free account</p><br /><br />
-      <div className="SignUp-container">
+      <form className="SignUp-container" onSubmit={handleSubmit}>
         <div className="SignUp">
           <label htmlFor="emailprompt" >Email</label>
-          <input className="email-field" type="email" id="emailprompt" placeholder="example@gmail.com" required />
+          <input className="email-field" type="email" id="emailprompt" maxLength={72} placeholder="example@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <div className="password-container">
             <div className="password-field">
               <label htmlFor="password">Password</label>
-              <input className="password-field" type="password" id="password" placeholder="Enter your password" required/>
+              <input className="password-field" type="password" id="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)}required/>
             </div>
             <div className="password-field">
               <label htmlFor="confirmPassword">Confirm Password</label>
-              <input type="password" id="confirmPassword" placeholder="Enter your password" required/>
+              <input type="password" id="confirmPassword" placeholder="Enter your password" value={confirmPassword}onChange={(e) => setConfirmPassword(e.target.value)} required/>
             </div>
           </div>
           <label htmlFor="phone">Phone Number</label>
-          <input type="tel" id="phone" placeholder="(123) - 456 - 7890" required/><br></br>
+          <input type="tel" id="phone" placeholder="(123) - 456 - 7890" value={phone} onChange={(e) => setPhone(e.target.value)} required/><br></br>
         </div>
-        <div>
-          <button id= "submitButton" type="submit" style={{ width: '100%', alignItems: 'center' }}>Sign up</button>
-        </div>
+          <button id="submitButton" type="submit" style={{ width: '100%', alignItems: 'center' }} > Sign Up </button>
         <div className="container-link">
           <Link to="/">Continue to Login Page</Link>
         </div>
-      </div>
+      </form>
     </div>
     </div>
   )
