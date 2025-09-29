@@ -1,4 +1,4 @@
-function changeButtonColor() {
+function _changeButtonColor() {
   document.getElementById('submitButton');
   document.getElementById('submitButton').addEventListener('mousedown', function() {
     document.getElementById('submitButton').style.background = 'rgba(131, 191, 255, 1)';
