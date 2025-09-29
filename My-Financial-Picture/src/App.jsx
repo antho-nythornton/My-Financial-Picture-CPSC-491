@@ -4,7 +4,7 @@ import Dashboard from './Dashboard'
 import About from './About'
 import Navigation from './Navigation'
 import Started from './Started'
-import Reset_password from './reset_password'
+import Reset_password from './Reset_password'
 
 function App() {
   return (
