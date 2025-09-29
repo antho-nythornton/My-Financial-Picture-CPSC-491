@@ -7,9 +7,4 @@ const base = isCI ? '/My-Financial-Picture-CPSC-491/' : '/'
 export default defineConfig({
   plugins: [react()],
   base,
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: './setupTests.js' 
-  },
 })
