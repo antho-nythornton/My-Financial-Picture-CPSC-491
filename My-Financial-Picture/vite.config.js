@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const isGhPages = !!process.env.GITHUB_PAGES
-const base = isGhPages ? '/My-Financial-Picture-CPSC-491/' : '/'
+const isCI = !!process.env.GITHUB_ACTIONS || !!process.env.GITHUB_PAGES
+const base = isCI ? '/My-Financial-Picture-CPSC-491/' : '/'
 
 export default defineConfig({
   plugins: [react()],
+  base,
   test: {
     environment: 'jsdom',
     globals: true,
