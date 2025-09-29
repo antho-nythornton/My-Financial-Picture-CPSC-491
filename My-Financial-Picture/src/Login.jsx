@@ -35,6 +35,8 @@ function Login() {
         </button>
         <div className="container-link">
           <Link to="/started">Create an account</Link>
+        </div>
+        <div className="container-link">
           <Link to="/reset_password">Forgot Password?</Link>
         </div>
       </form>

@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, test, expect } from 'vitest'
-import '@testing-library/jest-dom'
 import App from '../src/App'
 
 describe('Auth navigation', () => {
