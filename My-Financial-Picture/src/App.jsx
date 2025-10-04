@@ -1,24 +1,35 @@
-import { Routes, Route } from 'react-router-dom'
-import Login from './Login'
-import Dashboard from './Dashboard'
-import About from './About'
-import Navigation from './Navigation'
-import Started from './Started'
-import Reset_password from './Reset_password'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import Navigation from './Navigation';
+import Login from './Login';
+import Started from './Started';
+import Dashboard from './Dashboard';
+import Reset_password from './Reset_password';
+import { useAuth } from './context/AuthContext';
 
-function App() {
-  return (
-    <>
-    <Navigation />
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/started" element={<Started />} />
-      <Route path="/reset_password" element={<Reset_password />} />
-    </Routes>
-    </>
-  )
+function RequireAuth() {
+  const { isAuthed } = useAuth();
+  return isAuthed ? <Outlet /> : <Navigate to="/" replace />;
 }
 
-export default App
+export default function App() {
+  return (
+    <>
+      <Navigation />
+      <Routes>
+        {/* Landing = Login */}
+        <Route path="/" element={<Login />} />
+        <Route path="/started" element={<Started />} />
+        {/* Keep the route lower-case to match your Links */}
+        <Route path="/reset_password" element={<Reset_password />} />
+
+        {/* Protected area */}
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}

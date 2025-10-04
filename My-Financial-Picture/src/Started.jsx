@@ -1,50 +1,45 @@
 import { useState } from "react";
 import './Started.css';
 import {Link, useNavigate} from 'react-router-dom';
-import { API_BASE } from './lib/api';
+import api from './lib/api';
 
+
+function getErrMsg(err) {
+  const d = err?.response?.data
+  if (Array.isArray(d?.detail)) return d.detail.map(e => e.msg).join('\n')
+  if (typeof d?.detail === 'string') return d.detail
+  if (typeof d?.message === 'string') return d.message
+  return err?.message || 'Registration failed'
+}
 
 function Started() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [phone, setPhone] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  // Step 2: Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+      alert('Passwords do not match!')
+      return
     }
 
     try {
-      const res = await fetch(`${API_BASE}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: phone,
-          email: email,
-          password: password,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (res.ok) {
-        alert("Account created successfully!");
-        navigate("/");
-      } else {
-        alert(`Error: ${data.detail || 'Registration failed'}`)
-      }
+      setSubmitting(true)
+      await api.post('/register', { username: phone, email, password })
+      alert('Account created successfully!')
+      navigate('/', { replace: true })
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again later.");
+      alert(`Error: ${getErrMsg(err)}`)
+    } finally {
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="login-page">

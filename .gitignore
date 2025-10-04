@@ -23,3 +23,9 @@ My-Financial-Picture/backend/*.pyc
 My-Financial-Picture/backend/coverage/
 
 **/*.log
+
+
+/backend/.env
+**/.env
+**/.env.*
+!**/.env.example

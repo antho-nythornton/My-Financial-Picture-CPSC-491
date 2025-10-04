@@ -1,11 +1,12 @@
 import {Link, useNavigate} from 'react-router-dom'
 import React, {useState}  from 'react'
-import axios from 'axios'
 import './Login.css'
-import { API_BASE } from './lib/api'
+import api from './lib/api';
+import { useAuth } from './context/AuthContext'
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,8 +16,9 @@ function Login() {
     event.preventDefault();
     setMessage('');
     try {
-      const res = await axios.post(`${API_BASE}/login`, { email, password });
-      setMessage(res.data.message || 'Login successful');
+      const res = await api.post('/login', { email, password });
+      login({ userId: res.data.user_id });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
       console.error('Login error:', error);
