@@ -1,48 +1,46 @@
 import { useState } from "react";
 import './Started.css';
-import {Link} from 'react-router-dom';
-import Login from './Login'
+import {Link, useNavigate} from 'react-router-dom';
+import api from './lib/api';
 
+
+function getErrMsg(err) {
+  const d = err?.response?.data
+  if (Array.isArray(d?.detail)) return d.detail.map(e => e.msg).join('\n')
+  if (typeof d?.detail === 'string') return d.detail
+  if (typeof d?.message === 'string') return d.message
+  return err?.message || 'Registration failed'
+}
 
 function Started() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const navigate = useNavigate()
 
-  // Step 2: Handle form submission
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [phone, setPhone] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+      alert('Passwords do not match!')
+      return
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: phone, // or use a separate username field if you have one
-          email: email,
-          password: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Account created successfully!");
-        window.location.href = "/Login";
-      } else {
-        alert(`Error: ${data.detail}`);
-      }
+      setSubmitting(true)
+      await api.post('/register', { username: phone, email, password })
+      alert('Account created successfully!')
+      navigate('/', { replace: true })
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again later.");
+      alert(`Error: ${getErrMsg(err)}`)
+    } finally {
+      setSubmitting(false)
     }
-  };
+  }
+
   return (
     <div className="login-page">
     <div className="container">

@@ -1,18 +1,24 @@
-import {Link} from 'react-router-dom'
-import React, {useState}  from 'react';
-import axios from 'axios';
+import {Link, useNavigate} from 'react-router-dom'
+import React, {useState}  from 'react'
 import './Login.css'
+import api from './lib/api';
+import { useAuth } from './context/AuthContext'
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setMessage('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login', { email, password });
-    setMessage(response.data.message);
+      const res = await api.post('/login', { email, password });
+      login({ userId: res.data.user_id });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
       console.error('Login error:', error);
