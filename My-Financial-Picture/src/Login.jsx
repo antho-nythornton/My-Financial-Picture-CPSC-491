@@ -1,18 +1,22 @@
-import {Link} from 'react-router-dom'
-import React, {useState}  from 'react';
-import axios from 'axios';
+import {Link, useNavigate} from 'react-router-dom'
+import React, {useState}  from 'react'
+import axios from 'axios'
 import './Login.css'
+import { API_BASE } from './lib/api'
 
 function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setMessage('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login', { email, password });
-    setMessage(response.data.message);
+      const res = await axios.post(`${API_BASE}/login`, { email, password });
+      setMessage(res.data.message || 'Login successful');
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
       console.error('Login error:', error);

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import './Started.css';
-import {Link} from 'react-router-dom';
-import Login from './Login'
+import {Link, useNavigate} from 'react-router-dom';
+import { API_BASE } from './lib/api';
 
 
 function Started() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,29 +22,30 @@ function Started() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/register", {
+      const res = await fetch(`${API_BASE}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: phone, // or use a separate username field if you have one
+          username: phone,
           email: email,
           password: password,
         }),
       });
 
-      const data = await response.json();
+      const data = await res.json().catch(() => ({}));
 
-      if (response.ok) {
+      if (res.ok) {
         alert("Account created successfully!");
-        window.location.href = "/Login";
+        navigate("/");
       } else {
-        alert(`Error: ${data.detail}`);
+        alert(`Error: ${data.detail || 'Registration failed'}`)
       }
     } catch (err) {
       console.error(err);
       alert("Something went wrong. Please try again later.");
     }
   };
+
   return (
     <div className="login-page">
     <div className="container">
