@@ -41,9 +41,9 @@
   gap: 1rem;
 }
 .icon-btn {
-  background: none;
+  background: black;
   border: none;
-  font-size: 1.9rem;
+  font-size: 10px;
   cursor: pointer;
 }
 .profile-pic {
