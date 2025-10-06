@@ -3,6 +3,7 @@ import './Navbar.css';
 function Navbar() {
   return (
     <nav className="navbar">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
       <div className="navbar-left">
         <h2>Finance Tracker</h2>
       </div>
@@ -17,13 +18,10 @@ function Navbar() {
       </ul>
 
       <div className="navbar-right">
-        <button className="icon-btn">🔔</button>
-        <button className="icon-btn">⚙️</button>
-        <img
-          src="https://via.placeholder.com/32"
-          alt="Profile"
-          className="profile-pic"
-        />
+        <button className="icon-btn" ><i class="material-icons">notifications</i></button>
+        <button className="icon-btn" ><i class="material-icons">settings</i></button>
+
+        <button className="icon-btn" ><i class="material-icons">account_circle</i></button>
       </div>
     </nav>
   );
