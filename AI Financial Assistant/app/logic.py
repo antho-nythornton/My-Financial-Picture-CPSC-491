@@ -1,10 +1,26 @@
 import pandas as pd
+import math
 from app.model import load_model
 
 model = load_model()
 
 def suggest_budget(income, fixed_expenses, savings_goal, months_to_goal):
     """Suggest a personalized budget breakdown."""
+    try:
+        income = float(income)
+        fixed_expenses = float(fixed_expenses)
+        savings_goal = float(savings_goal)
+        months_to_goal = float(months_to_goal)
+    except (ValueError, TypeError):
+        return "⚠️ Input not realistic. Please enter numeric values."
+
+    # Reject NaN or infinite values
+    if any(map(lambda x: math.isnan(x) or math.isinf(x), [income, fixed_expenses, savings_goal, months_to_goal])):
+        return "⚠️ Input not realistic. Please enter numeric values."
+
+    if months_to_goal <= 0 or income <= 0 or fixed_expenses < 0 or savings_goal < 0:
+        return "⚠️ Input not realistic. Please check your numbers."
+
     savings_per_month = savings_goal / months_to_goal
     available = income - fixed_expenses - savings_per_month
 
