@@ -5,12 +5,12 @@ import SpendingChart from './components/SpendingChart';
 import CategoryChart from './components/CategoryChart';
 import Transactions from './components/Transactions';
 import Notifications from './components/Notifications';
+import Logout from './Logout';
 
 function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard-container">
-
         <Navbar />
         <h1>Hi, Carlos</h1>
         <p>Here’s your finance report for July</p>
