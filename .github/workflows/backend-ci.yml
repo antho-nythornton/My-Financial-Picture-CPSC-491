@@ -16,8 +16,8 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: MY_FINANCIAL_PICTURE_TEST
+          MYSQL_ROOT_PASSWORD: jay
+          MYSQL_DATABASE: MY_FINANCIAL_PICTURE
         ports:
           - 3306:3306
         options: >-
@@ -39,17 +39,27 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install fastapi uvicorn pytest mysql-connector-python passlib python-dotenv httpx
+          pip install -r requirements.txt
+
 
       - name: Wait for MySQL to be ready
         run: |
-          echo "Waiting for MySQL to start..."
-          sleep 20  # simple wait; could also use a loop to check health
+          echo "⏳ Waiting for MySQL to start..."
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 --silent; then
+              echo "MySQL is running!"
+              break
+            fi
+            echo "MySQL not ready yet... retrying ($i/30)"
+            sleep 2
+          done
+
 
       - name: Run backend tests
         env:
-          DB_HOST: 127.0.0.1
-          DB_USER: root
-          DB_PASSWORD: password
-          DB_NAME: MY_FINANCIAL_PICTURE_TEST
+          DB_HOST: mfp-db-dev.cj0mg2aea2ln.us-east-2.rds.amazonaws.com
+          DB_USER: jay
+          DB_PASSWORD: jay
+          DB_NAME: MY_FINANCIAL_PICTURE
         run: |
-          pytest tests/ --maxfail=1 --disable-warnings -q
+          pytest backend/
