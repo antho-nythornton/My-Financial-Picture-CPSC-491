@@ -11,10 +11,10 @@ import os
 load_dotenv()
 
 DB_CONFIG = dict(
-    host=os.getenv("DB_HOST"),
+    host=os.getenv("DB_HOST","mfp-db-dev.cj0mg2aea2ln.us-east-2.rds.amazonaws.com"),
     port=int(os.getenv("DB_PORT", "3306")),
-    user=os.getenv("DB_USER"),                
-    password=os.getenv("DB_PASSWORD"),
+    user=os.getenv("DB_USER", "jay"),                
+    password=os.getenv("DB_PASSWORD", "jay"),
     database=os.getenv("DB_NAME", "MY_FINANCIAL_PICTURE"),
 )
 
@@ -42,10 +42,20 @@ app.add_middleware(
 )
 
 def get_db_conn():
-    return mysql.connector.connect(**DB_CONFIG)
+    try:
+        conn = mysql.connector.connect(
+            **DB_CONFIG,
+            connection_timeout=5,  # ⏱️ 5 seconds max wait
+        )
+        print("[DEBUG] DB_HOST:", os.getenv("DB_HOST"))
+        print("[DEBUG] DB_USER:", os.getenv("DB_USER"))
+        print("[DEBUG] DB_PASSWORD:", os.getenv("DB_PASSWORD"))
+        return conn
+    except mysql.connector.Error as e:
+        print(f"[DB ERROR] Connection failed: {e}")
+        return None
 
 class RegisterRequest(BaseModel):
-    username: constr(strip_whitespace=True, min_length=1) | None = None
     email: EmailStr
     password: constr(min_length=8)
 
@@ -129,6 +139,12 @@ def login(payload: LoginRequest):
             cur.close(); conn.close()
         except Exception:
             pass
+
+
+@app.get("/")
+def root():
+    return {"message": "FastAPI server is running!"}
+
 
 if __name__ == "__main__":
     import uvicorn
