@@ -3,12 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, test, expect } from 'vitest'
 import App from '../src/App'
+import { AuthProvider } from '../src/context/AuthContext'
+
+
 
 describe('Auth navigation', () => {
   test('Clicking "Create an account" goes to Started page', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </MemoryRouter>
     )
 
@@ -28,7 +33,9 @@ describe('Auth navigation', () => {
   test('Clicking "Continue to Login Page" goes back to Login page', async () => {
     render(
       <MemoryRouter initialEntries={['/started']}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </MemoryRouter>
     )
 
