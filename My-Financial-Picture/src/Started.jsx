@@ -15,10 +15,12 @@ function getErrMsg(err) {
 function Started() {
   const navigate = useNavigate()
 
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [phone, setPhone] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -31,7 +33,14 @@ function Started() {
 
     try {
       setSubmitting(true)
-      await api.post('/register', { username: phone, email, password })
+
+      await api.post('/register', {
+        email: email.trim().toLowerCase(),
+        password,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        phone,
+      });
       alert('Account created successfully!')
       navigate('/', { replace: true })
     } catch (err) {
@@ -48,6 +57,16 @@ function Started() {
       <p>Sign Up for a free account</p><br /><br />
       <form className="SignUp-container" onSubmit={handleSubmit}>
         <div className="SignUp">
+          <div className="password-container">
+            <div className="password-field">
+              <label htmlFor="firstName">First Name</label>
+              <input type="text" id="firstName" placeholder="Jane" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+            </div>
+            <div className="password-field">
+              <label htmlFor="lastName">Last Name</label>
+              <input type="text" id="lastName" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            </div>
+          </div>
           <label htmlFor="emailprompt" >Email</label>
           <input className="email-field" type="email" id="emailprompt" maxLength={72} placeholder="example@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <div className="password-container">

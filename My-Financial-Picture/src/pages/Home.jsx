@@ -10,10 +10,11 @@ import { useAuth } from './context/AuthContext'
 function Dashboard() {
 
   const { firstName } = useAuth()
-
+  
   return (
     <div className="dashboard">
       <div className="dashboard-container">
+        <Navbar />
         <h1>Hi, { firstName }</h1>
         <p>Here’s your finance report for July</p>
 

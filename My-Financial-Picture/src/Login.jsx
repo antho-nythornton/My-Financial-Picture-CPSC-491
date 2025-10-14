@@ -17,7 +17,12 @@ function Login() {
     setMessage('');
     try {
       const res = await api.post('/login', { email, password });
-      login({ userId: res.data.user_id });
+      login({
+        userId: res.data.user_id,
+        firstName: res.data.first_name || null,
+        lastName: res.data.last_name || null,
+        email,
+      })
       navigate('/dashboard', { replace: true });
     } catch (error) {
       setMessage(error.response?.data?.message || 'Login failed');
