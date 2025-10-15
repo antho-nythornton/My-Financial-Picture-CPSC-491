@@ -8,9 +8,11 @@ export function AuthProvider({ children }) {
   const [auth, setAuth] = useState(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : { isAuthed: false, userId: null };
+      return raw
+        ? JSON.parse(raw)
+        : { isAuthed: false, userId: null, firstName: null, lastName: null, email: null };
     } catch {
-      return { isAuthed: false, userId: null };
+      return { isAuthed: false, userId: null, firstName: null, lastName: null, email: null };
     }
   });
 
@@ -21,8 +23,19 @@ export function AuthProvider({ children }) {
   const value = useMemo(() => ({
     isAuthed: !!auth.isAuthed,
     userId: auth.userId,
-    login: (payload = {}) => setAuth({ isAuthed: true, userId: payload.userId ?? null }),
-    logout: () => setAuth({ isAuthed: false, userId: null }),
+    firstName: auth.firstName,
+      lastName: auth.lastName,
+      email: auth.email,   
+    login: (payload = {}) =>
+        setAuth({
+          isAuthed: true,
+          userId: payload.userId ?? null,
+          firstName: payload.firstName ?? null,
+          lastName: payload.lastName ?? null,
+          email: payload.email ?? null,
+        }),
+      logout: () =>
+        setAuth({ isAuthed: false, userId: null, firstName: null, lastName: null, email: null }),
   }), [auth]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

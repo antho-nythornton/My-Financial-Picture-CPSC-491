@@ -11,11 +11,11 @@ import os
 load_dotenv()
 
 DB_CONFIG = dict(
-    host=os.getenv("DB_HOST","mfp-db-dev.cj0mg2aea2ln.us-east-2.rds.amazonaws.com"),
+    host=os.getenv("DB_HOST"),
     port=int(os.getenv("DB_PORT", "3306")),
-    user=os.getenv("DB_USER", "jay"),                
-    password=os.getenv("DB_PASSWORD", "jay"),
-    database=os.getenv("DB_NAME", "MY_FINANCIAL_PICTURE"),
+    user=os.getenv("DB_USER"),                
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
 )
 
 def ts() -> str:
@@ -43,14 +43,7 @@ app.add_middleware(
 
 def get_db_conn():
     try:
-        conn = mysql.connector.connect(
-            **DB_CONFIG,
-            connection_timeout=5,  # ⏱️ 5 seconds max wait
-        )
-        print("[DEBUG] DB_HOST:", os.getenv("DB_HOST"))
-        print("[DEBUG] DB_USER:", os.getenv("DB_USER"))
-        print("[DEBUG] DB_PASSWORD:", os.getenv("DB_PASSWORD"))
-        return conn
+        return mysql.connector.connect(**DB_CONFIG, connection_timeout=5)
     except mysql.connector.Error as e:
         print(f"[DB ERROR] Connection failed: {e}")
         return None
@@ -58,6 +51,9 @@ def get_db_conn():
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: constr(min_length=8)
+    first_name: constr(strip_whitespace=True, min_length=1)
+    last_name: constr(strip_whitespace=True, min_length=1)
+    phone: constr(strip_whitespace=True) | None = None  
 
 class RegisterResponse(BaseModel):
     message: str
@@ -66,6 +62,12 @@ class RegisterResponse(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+    
+class LoginResponse(BaseModel):
+    message: str
+    user_id: int
+    first_name: str | None = None
+    last_name: str | None = None
 
 @app.get("/healthz")
 def healthz():
@@ -98,10 +100,10 @@ def register(user: RegisterRequest):
 
         cur.execute(
             """
-            INSERT INTO USERS (EMAIL, PASSWORD_HASH, CREATED_AT, LAST_LOGIN)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO USERS (EMAIL, PASSWORD_HASH, FIRST_NAME, LAST_NAME, CREATED_AT, LAST_LOGIN)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """,
-            (user.email, hashed_pw, ts(), None),
+            (user.email, hashed_pw, user.first_name, user.last_name, ts(), None),
         )
         conn.commit()
         return RegisterResponse(message="User registered successfully", user_id=cur.lastrowid)
@@ -114,13 +116,13 @@ def register(user: RegisterRequest):
         except Exception:
             pass
 
-@app.post("/login")
+@app.post("/login", response_model=LoginResponse)
 def login(payload: LoginRequest):
     try:
         conn = get_db_conn()
         cur = conn.cursor(dictionary=True)
 
-        cur.execute("SELECT ID, PASSWORD_HASH FROM USERS WHERE EMAIL=%s", (payload.email,))
+        cur.execute("SELECT ID, PASSWORD_HASH, FIRST_NAME, LAST_NAME FROM USERS WHERE EMAIL=%s", (payload.email,))
         row = cur.fetchone()
         if not row or not pwd_context.verify(payload.password, row["PASSWORD_HASH"]):
             raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -130,7 +132,12 @@ def login(payload: LoginRequest):
         conn.commit()
         cur2.close()
 
-        return {"message": "Login successful", "user_id": row["ID"]}
+        return LoginResponse(
+            message="Login successful",
+            user_id=row["ID"],
+            first_name=row.get("FIRST_NAME"),
+            last_name=row.get("LAST_NAME"),
+        )
 
     except errors.Error:
         raise HTTPException(status_code=500, detail="Internal Server Error")
