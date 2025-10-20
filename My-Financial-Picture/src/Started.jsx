@@ -21,10 +21,13 @@ function Started() {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [setSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (isSubmitting) return
 
     if (password !== confirmPassword) {
       alert('Passwords do not match!')
@@ -32,7 +35,7 @@ function Started() {
     }
 
     try {
-      setSubmitting(true)
+      setIsSubmitting(true)
 
       await api.post('/register', {
         email: email.trim().toLowerCase(),
@@ -46,7 +49,7 @@ function Started() {
     } catch (err) {
       alert(`Error: ${getErrMsg(err)}`)
     } finally {
-      setSubmitting(false)
+      setIsSubmitting(false)
     }
   }
 
