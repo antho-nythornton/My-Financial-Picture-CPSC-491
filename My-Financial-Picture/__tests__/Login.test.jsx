@@ -6,7 +6,7 @@ import App from '../src/App'
 import { AuthProvider } from '../src/context/AuthContext'
 
 vi.mock('axios', () => {
-  const post = vi.fn((url, body) => {
+  const post = vi.fn((url) => {
     if (url === '/login') {
       return Promise.resolve({
         data: {

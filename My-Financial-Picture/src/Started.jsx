@@ -21,7 +21,7 @@ function Started() {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [setSubmitting] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()

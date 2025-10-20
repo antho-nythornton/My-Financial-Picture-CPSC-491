@@ -8,7 +8,7 @@ import { AuthProvider } from '../src/context/AuthContext'
 vi.mock('../src/lib/api', () => {
   return {
     default: {
-      post: vi.fn((url, body) => {
+      post: vi.fn((url) => {
         if (url === '/login') {
           return Promise.resolve({
             data: {
