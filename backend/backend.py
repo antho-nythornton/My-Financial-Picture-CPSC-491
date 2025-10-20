@@ -7,8 +7,10 @@ import mysql.connector
 from mysql.connector import errors
 from datetime import datetime
 import os
+from pathlib import Path
+from datetime import datetime, timezone
 
-load_dotenv()
+load_dotenv(Path(__file__).with_name(".env"))
 
 DB_CONFIG = dict(
     host=os.getenv("DB_HOST"),
@@ -19,7 +21,7 @@ DB_CONFIG = dict(
 )
 
 def ts() -> str:
-    return datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 

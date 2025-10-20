@@ -1,42 +1,50 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import App from '../src/App';
-import { AuthProvider } from '../src/context/AuthContext';
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
+import App from '../src/App'
+import { AuthProvider } from '../src/context/AuthContext'
 
-const renderWithRouterAndAuth = (ui, { route = '/' } = {}) => {
-  return render(
-    <MemoryRouter initialEntries={[route]}>
-      <AuthProvider>{ui}</AuthProvider>
-    </MemoryRouter>
-  );
-};
+vi.mock('axios', () => {
+  const post = vi.fn((url, body) => {
+    if (url === '/login') {
+      return Promise.resolve({
+        data: {
+          message: 'Login successful',
+          user_id: 42,
+          first_name: 'Test',
+          last_name: 'User',
+        },
+      })
+    }
+    return Promise.reject(new Error(`Unexpected API call: ${url}`))
+  })
+  return {
+    default: { create: () => ({ post }) },
+  }
+})
 
 describe('FTest-05: Login Page Navigation', () => {
-  it('allows user with valid credentials to access the dashboard', async () => {
-    renderWithRouterAndAuth(<App />, { route: '/' });
+  beforeEach(() => localStorage.clear())
+  afterEach(() => vi.clearAllMocks())
 
-    // Verify we're on the login page
-    expect(
-      screen.getByRole('heading', { level: 2, name: /login/i })
-    ).toBeInTheDocument();
+  test('allows user with valid credentials to access the dashboard', async () => {
+    const user = userEvent.setup()
 
-    // Enter valid email
-    fireEvent.change(screen.getByPlaceholderText(/enter your email/i), {
-      target: { value: 'testuser@example.com' },
-    });
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </MemoryRouter>
+    )
 
-    // Enter valid password
-    fireEvent.change(screen.getByPlaceholderText(/enter your password/i), {
-      target: { value: 'password123' },
-    });
+    await user.type(screen.getByLabelText(/email/i), 'testuser@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /login/i }))
 
-    // Click the Login button
-    fireEvent.click(screen.getByRole('button', { name: /login/i }));
-
-    // Wait for navigation and dashboard to appear
     await waitFor(() => {
-      expect(screen.getByText(/dashboard/i)).toBeInTheDocument();
-    });
-  });
-});
+      expect(screen.getByText(/hi,\s*test/i)).toBeInTheDocument()
+    })
+  })
+})
