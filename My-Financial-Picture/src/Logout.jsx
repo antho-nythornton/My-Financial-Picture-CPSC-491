@@ -3,7 +3,7 @@ import { useAuth } from './context/AuthContext'
 
 export default function Logout() {
   const navigate = useNavigate()
-  const { isAuthed, userId, logout } = useAuth()
+  const { isAuthed, logout } = useAuth()
 
   if (!isAuthed) return null
 

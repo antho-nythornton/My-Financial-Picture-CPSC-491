@@ -5,28 +5,33 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import App from '../src/App'
 import { AuthProvider } from '../src/context/AuthContext'
 
-vi.mock('axios', () => {
-  const post = vi.fn((url) => {
-    if (url === '/login') {
-      return Promise.resolve({
-        data: {
-          message: 'Login successful',
-          user_id: 42,
-          first_name: 'Test',
-          last_name: 'User',
-        },
-      })
-    }
-    return Promise.reject(new Error(`Unexpected API call: ${url}`))
-  })
+vi.mock('../src/lib/api', () => {
   return {
-    default: { create: () => ({ post }) },
+    default: {
+      post: vi.fn((url) => {
+        if (url === '/login') {
+          return Promise.resolve({
+            data: {
+              message: 'Login successful',
+              user_id: 42,
+              first_name: 'Test',
+              last_name: 'User',
+            },
+          })
+        }
+        return Promise.reject(new Error(`Unexpected API call: ${url}`))
+      }),
+    },
   }
 })
 
-describe('FTest-05: Login Page Navigation', () => {
-  beforeEach(() => localStorage.clear())
-  afterEach(() => vi.clearAllMocks())
+describe('FTest-05', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
 
   test('allows user with valid credentials to access the dashboard', async () => {
     const user = userEvent.setup()
@@ -41,6 +46,7 @@ describe('FTest-05: Login Page Navigation', () => {
 
     await user.type(screen.getByLabelText(/email/i), 'testuser@example.com')
     await user.type(screen.getByLabelText(/password/i), 'password123')
+
     await user.click(screen.getByRole('button', { name: /login/i }))
 
     await waitFor(() => {

@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Login from '../src/Login';
 import { AuthProvider } from '../src/context/AuthContext';
+import { describe, test, expect } from 'vitest';
 
 const renderWithRouterAndAuth = (ui) => {
   return render(

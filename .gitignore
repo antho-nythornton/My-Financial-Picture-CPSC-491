@@ -4,11 +4,35 @@ Thumbs.db
 .vscode/
 .idea/
 
+**/node_modules/
+**/dist/
+**/.vite/
+
 /backend/__pycache__
+
+**/.venv/
+**/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
 
 **/.env
 **/.env.local
 **/.env.*.local
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.DS_Store
+.idea/
+.vscode/
+EOF
+
 
 .venv/
 
