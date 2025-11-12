@@ -1,136 +1,208 @@
+from flask import Flask, render_template_string, request, jsonify
 import re
-from app.logic import suggest_budget
 
-class HoneyBun:
-    def __init__(self):
-        self.data = {
-            "income": None,
-            "fixed_expenses": None,
-            "savings_goal": None,
-            "months_to_goal": None
+app = Flask(__name__)
+
+# Default financial data
+user_data = {
+    "income": 3000,
+    "expenses": 1500,
+    "savings": 200,
+    "categories": {
+        "food": 300,
+        "entertainment": 200,
+        "bills": 1000
+    }
+}
+
+# HTML for the chat interface
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Financial Assistant 💬</title>
+    <style>
+        body { font-family: Arial; background: #f5f7fa; display: flex; justify-content: center; margin-top: 50px; }
+        #chatbox { width: 420px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #header { background: #007bff; color: white; padding: 12px; border-radius: 10px 10px 0 0; font-size: 18px; font-weight: bold; text-align: center; }
+        #chatlog { height: 450px; overflow-y: auto; padding: 12px; border-bottom: 1px solid #ddd; }
+        .user { text-align: right; margin: 8px 0; }
+        .user span { background: #007bff; color: white; padding: 8px 12px; border-radius: 15px; display: inline-block; }
+        .bot { text-align: left; margin: 8px 0; }
+        .bot span { background: #f1f1f1; padding: 8px 12px; border-radius: 15px; display: inline-block; }
+        #inputArea { display: flex; }
+        #message { flex: 1; padding: 10px; border: none; border-radius: 0 0 0 10px; outline: none; }
+        #send { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 0 0 10px 0; cursor: pointer; }
+        #send:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div id="chatbox">
+        <div id="header">AI Financial Assistant 💬</div>
+        <div id="chatlog"></div>
+        <div id="inputArea">
+            <input type="text" id="message" placeholder="Type your message..." />
+            <button id="send">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("message");
+            const msg = input.value.trim();
+            if (!msg) return;
+            const chatlog = document.getElementById("chatlog");
+
+            chatlog.innerHTML += `<div class='user'><span>${msg}</span></div>`;
+            input.value = "";
+            chatlog.scrollTop = chatlog.scrollHeight;
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: msg })
+            });
+            const data = await response.json();
+            chatlog.innerHTML += `<div class='bot'><span>${data.reply}</span></div>`;
+            chatlog.scrollTop = chatlog.scrollHeight;
         }
-        self.scenarios = []
 
-    def extract_numbers_by_keyword(self, text):
-        """
-        Extract numeric values from text and map them to the right fields using keywords.
-        Associates each keyword with the closest number in the sentence.
-        """
-        text_lower = text.lower()
-        keywords = {
-            "income": ["income", "earn", "salary", "make"],
-            "fixed_expenses": ["fixed expense", "expenses", "bills", "cost"],
-            "savings_goal": ["savings", "save", "goal", "target"],
-            "months_to_goal": ["month", "months", "timeframe", "period", "duration"]
-        }
+        document.getElementById("send").addEventListener("click", sendMessage);
+        document.getElementById("message").addEventListener("keypress", e => {
+            if (e.key === "Enter") sendMessage();
+        });
 
-        # Find all numbers with positions
-        numbers = [(m.start(), m.group()) for m in re.finditer(r"\$?(\d+(?:,\d{3})*(?:\.\d+)?)", text_lower)]
-        numbers = [(pos, float(n.replace(',', ''))) for pos, n in numbers]
+        // Initial greeting message on load
+        window.onload = () => {
+            const chatlog = document.getElementById("chatlog");
+            chatlog.innerHTML += `<div class='bot'><span>👋 Welcome to your AI Financial Assistant!<br>
+            You can say things like:<br>
+            • "Update my income to 4000"<br>
+            • "Add 200 to entertainment"<br>
+            • "Show my budget"<br>
+            • "Help" to see all commands</span></div>`;
+        };
+    </script>
+</body>
+</html>
+"""
 
-        for key, kw_list in keywords.items():
-            # Find keyword occurrences
-            positions = [m.start() for kw in kw_list for m in re.finditer(r"\b" + re.escape(kw) + r"\b", text_lower)]
-            if not positions:
-                continue
+def calculate_remaining_budget():
+    total_spent = sum(user_data["categories"].values()) + user_data["savings"]
+    return user_data["income"] - total_spent
 
-            # Find closest number to any keyword occurrence
-            closest_number = None
-            min_distance = float('inf')
-            for pos_kw in positions:
-                for pos_num, num in numbers:
-                    distance = abs(pos_kw - pos_num)
-                    if distance < min_distance:
-                        min_distance = distance
-                        closest_number = num
-            if closest_number is not None:
-                self.data[key] = closest_number
+def handle_input(user_input):
+    text = user_input.lower().strip()
 
+    # Help and greeting
+    if text in ["hi", "hello", "hey"]:
+        return ("👋 Hi there! I'm your AI Financial Assistant.<br>"
+                "You can ask me to:<br>"
+                "- Update your income or expenses<br>"
+                "- Add to food, bills, or entertainment<br>"
+                "- Type 'help' for a list of all commands!")
 
-    def show_current_data(self):
-        print("📝 Current Financial Data:")
-        for key, val in self.data.items():
-            print(f"  {key.replace('_', ' ').title()}: {val if val is not None else 'Not set'}")
-        print()
+    if "help" in text:
+        return ("🧭 Here’s what you can say:<br>"
+                "• 'Show my budget'<br>"
+                "• 'Add 200 to food'<br>"
+                "• 'Update entertainment to 400'<br>"
+                "• 'Set income to 5000'<br>"
+                "• 'Update savings to 300'<br>"
+                "• 'Reset data'")
 
-    def display_scenario(self, scenario, label="Scenario"):
-        print(f"\n💡 {label}:")
-        if isinstance(scenario, dict):
-            print(f"Income: ${scenario['Income']}")
-            print(f"Fixed Expenses: ${scenario['Fixed Expenses']}")
-            print(f"Savings per Month: ${scenario['Savings per Month']}")
-            print("Budget Allocation:")
-            for category, amount in scenario["Budget Allocation"].items():
-                print(f"  {category}: ${amount}")
-        else:
-            print(scenario)
+    # Reset
+    if "reset" in text:
+        user_data.update({
+            "income": 3000,
+            "expenses": 1500,
+            "savings": 200,
+            "categories": {"food": 300, "entertainment": 200, "bills": 1000}
+        })
+        return "🔄 All data reset to default values."
 
-    def compare_scenarios(self):
-        if not self.scenarios:
-            print("⚠️ No scenarios to compare yet.")
-            return
+    # Income updates
+    if "income" in text:
+        try:
+            amount = float("".join([c for c in text if c.isdigit() or c == "."]))
+            if any(word in text for word in ["update", "set", "change", "make"]):
+                user_data["income"] = amount
+                return f"💰 Income updated to ${amount:,.2f}."
+            else:
+                user_data["income"] += amount
+                return f"💰 Added ${amount:,.2f} to income. Total: ${user_data['income']:,.2f}."
+        except:
+            return "⚠️ Couldn't process income update."
 
-        print("\n📊 Scenario Comparison Table:")
-        print(f"{'Scenario':<10}{'Income':<10}{'Expenses':<10}{'Savings/Month':<15}{'Food':<10}{'Entertainment':<15}{'Shopping':<10}")
-        print("-" * 80)
-        for idx, scenario in enumerate(self.scenarios, start=1):
-            if isinstance(scenario, dict):
-                alloc = scenario["Budget Allocation"]
-                print(f"{idx:<10}${scenario['Income']:<9}${scenario['Fixed Expenses']:<9}${scenario['Savings per Month']:<14}"
-                      f"${alloc['Food']:<9}${alloc['Entertainment']:<14}${alloc['Shopping']:<9}")
-        print()
+    # Expenses updates
+    if "expense" in text or "expenses" in text:
+        try:
+            amount = float("".join([c for c in text if c.isdigit() or c == "."]))
+            if any(word in text for word in ["update", "set", "change"]):
+                user_data["expenses"] = amount
+                return f"💳 Expenses updated to ${amount:,.2f}."
+            else:
+                user_data["expenses"] += amount
+                return f"💳 Added ${amount:,.2f} to expenses. Total: ${user_data['expenses']:,.2f}."
+        except:
+            return "⚠️ Couldn't process expenses update."
 
-    def run(self):
-        print("💬 Welcome to My Financial Picture, AI Financial Assistant (HoneyBun)!")
-        print("Type 'exit' to quit, 'show' to see current data, 'help' for commands, or 'compare' to see past scenarios.\n")
+    # Savings updates
+    if "saving" in text or "savings" in text:
+        try:
+            amount = float("".join([c for c in text if c.isdigit() or c == "."]))
+            if any(word in text for word in ["update", "set", "change"]):
+                user_data["savings"] = amount
+                return f"🏦 Savings updated to ${amount:,.2f}."
+            else:
+                user_data["savings"] += amount
+                return f"🏦 Added ${amount:,.2f} to savings. Total: ${user_data['savings']:,.2f}."
+        except:
+            return "⚠️ Couldn't process savings update."
 
-        while True:
-            user_input = input("You: ").strip()
-            lower_input = user_input.lower()
+    # Category updates
+    for category in user_data["categories"]:
+        if category in text:
+            try:
+                amount = float("".join([c for c in text if c.isdigit() or c == "."]))
+                if any(word in text for word in ["update", "set", "change", "make"]):
+                    user_data["categories"][category] = amount
+                    return f"🔄 {category.capitalize()} updated to ${amount:,.2f}."
+                else:
+                    user_data["categories"][category] += amount
+                    return f"✅ Added ${amount:,.2f} to {category}. Total: ${user_data['categories'][category]:,.2f}."
+            except:
+                return f"⚠️ Please specify a valid amount for {category}."
 
-            if lower_input == 'exit':
-                print("👋 Goodbye!")
-                break
-            elif lower_input == 'show':
-                self.show_current_data()
-                continue
-            elif lower_input == 'help':
-                print("Commands:")
-                print("  show - display current financial data")
-                print("  compare - show all previous scenarios side by side")
-                print("  exit - quit")
-                print("You can also type natural sentences with numbers and keywords, e.g.,")
-                print("'I earn $4000, my fixed expenses are $1500, I want to save $2000 in 6 months.'\n")
-                continue
-            elif lower_input == 'compare':
-                self.compare_scenarios()
-                continue
+    # Show budget breakdown
+    if "budget" in text or "show" in text:
+        remaining = calculate_remaining_budget()
+        category_breakdown = "<br>".join([f"• {k.capitalize()}: ${v:,.2f}" for k, v in user_data["categories"].items()])
+        return (f"💰 Here's your budget breakdown:<br>"
+                f"Income: ${user_data['income']:,.2f}<br>"
+                f"Expenses: ${user_data['expenses']:,.2f}<br>"
+                f"Savings: ${user_data['savings']:,.2f}<br>"
+                f"{category_breakdown}<br>"
+                f"Remaining: ${remaining:,.2f}")
 
-            # Update values based on user input
-            self.extract_numbers_by_keyword(user_input)
+    # Default fallback summary
+    remaining = calculate_remaining_budget()
+    return (f"Here’s your quick financial summary:<br>"
+            f"• Income: ${user_data['income']:,.2f}<br>"
+            f"• Expenses: ${user_data['expenses']:,.2f}<br>"
+            f"• Savings: ${user_data['savings']:,.2f}<br>"
+            f"• Remaining budget: ${remaining:,.2f}<br><br>"
+            "Need help? Type 'help' to see what else I can do.")
 
-            # Check if all required data is present
-            if None in self.data.values():
-                print("⚠️ Missing some information. Current data:")
-                self.show_current_data()
-                continue
+@app.route("/")
+def index():
+    return render_template_string(HTML_TEMPLATE)
 
-            # Generate budget scenario
-            result = suggest_budget(
-                self.data["income"],
-                self.data["fixed_expenses"],
-                self.data["savings_goal"],
-                self.data["months_to_goal"]
-            )
-
-            # Store scenario
-            self.scenarios.append(result)
-
-            # Display result
-            self.display_scenario(result, label=f"Scenario {len(self.scenarios)}")
-            print("\n" + "=" * 80 + "\n")
-
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_message = request.json.get("message", "")
+    reply = handle_input(user_message)
+    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
-    assistant = HoneyBun()
-    assistant.run()
+    app.run(debug=True)
