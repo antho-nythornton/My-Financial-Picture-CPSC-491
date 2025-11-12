@@ -11,6 +11,8 @@ import Bills from './pages/Bills'
 import Planner from './pages/Planner'
 import AppLayout from './layouts/AppLayout'
 import { useAuth } from './context/AuthContext'
+import Settings from './Settings'
+import Notifications from './Notifications'
 
 function RequireAuth() {
   const { isAuthed } = useAuth()
@@ -35,6 +37,8 @@ export default function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/bills" element={<Bills />} />
           <Route path="/planner" element={<Planner />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Route>
       </Route>
 

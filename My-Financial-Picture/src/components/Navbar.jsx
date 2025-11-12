@@ -33,14 +33,14 @@ export default function Navbar() {
       </ul>
 
       <div className="navbar-right" ref={menuRef}>
-        <button className="icon-btn" aria-label="Notifications"><i className="material-icons">notifications</i></button>
-        <button className="icon-btn" aria-label="Settings" onClick={() => navigate('/settings')}>
-          <i className="material-icons">settings</i>
+        <button className="icon-btn" aria-label="Notifications" onClick={() => navigate('/notifications')} style={{ color: '#ffffff', backgroundColor: '#000000ff', borderRadius: '10px', alignItems: 'middle' }}><i className="material-icons">notifications</i></button>
+        <button className="icon-btn" aria-label="Settings" onClick={() => navigate('/settings') }>
+          <i className="material-icons" style={{ color: '#ffffff', backgroundColor: '#000000ff', borderRadius: '15px', verticalAlign: 'middle' }}>settings</i>
         </button>
 
         <div className="account-wrapper">
           <button className="icon-btn" aria-haspopup="menu" aria-expanded={open} aria-controls="account-menu" onClick={() => setOpen(v => !v)}>
-            <i className="material-icons">account_circle</i>
+            <i className="material-icons" style={{ color: '#ffffff', backgroundColor: '#000000ff', borderRadius: '15px', verticalAlign: 'middle' }}>account_circle</i>
           </button>
 
           {open && (
