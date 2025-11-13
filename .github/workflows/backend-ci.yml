@@ -61,4 +61,4 @@ jobs:
           DB_PASSWORD: jay
           DB_NAME: MY_FINANCIAL_PICTURE
         run: |
-          pytest backend/
+          python3.11 -m pytest ./My-Financial-Picture/__tests__/backend_tests.py

@@ -37,7 +37,9 @@ def test_root():
 def test_register_user_success(test_db):
     user = {
         "email": "testuser@example.com",
-        "password": "testpass123"
+        "password": "testpass123",
+        "first_name": "Test",
+        "last_name": "User"
     }
     response = client.post("/register", json=user)
     print(f"Register response: {response.status_code} {response.text}")
@@ -53,7 +55,7 @@ def test_register_user_success(test_db):
 
     assert row is not None, "User not found in database"
 def test_register_duplicate_email(test_db):
-    user = {"email": "test@example.com", "password": "testpass123"}
+    user = {"email": "test@example.com", "password": "testpass123", "first_name": "Test", "last_name": "User"}
     response = client.post("/register", json=user)
     print(f"Duplicate register response: {response.status_code} {response.text}")
     
