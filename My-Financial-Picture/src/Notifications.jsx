@@ -34,20 +34,20 @@ export default function Notifications() {
     };
 
     return (
-        <div className="notifications-container">
+        <div className="notif-container">
             <h1>Notifications</h1>
             {notifications.length === 0 ? (
                 <p className="no-notifications">No notifications</p>
             ) : (
-                <ul className="notifications-list">
+                <ul className="notif-list">
                     {notifications.map(notif => (
-                        <li key={notif.id} className={`notification-item ${notif.read ? 'read' : 'unread'}`}>
-                            <div className="notification-content">
+                        <li key={notif.id} className={`notif ${notif.read ? 'read' : 'unread'}`}>
+                            <div className="notif-content">
                                 <h3>{notif.title}</h3>
                                 <p>{notif.message}</p>
                                 <span className="timestamp">{notif.timestamp.toLocaleString()}</span>
                             </div>
-                            <div className="notification-actions">
+                            <div className="notif-actions">
                                 {!notif.read && (
                                     <button onClick={() => markAsRead(notif.id)} style={{ backgroundColor: '#012c5bff', color: '#ffffff', border: 'none', borderRadius: '5px', padding: '5px 10px', cursor: 'pointer',}}>Mark as read</button>
                                 )}
