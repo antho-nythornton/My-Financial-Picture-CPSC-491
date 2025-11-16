@@ -1,5 +1,5 @@
-.notification {
-    position: fixed;
+.notif {
+    position: flex;
     top: 20px;
     right: 20px;
     max-width: 400px;
@@ -12,31 +12,35 @@
     animation: slideIn 0.3s ease-in-out;
 }
 
-.notification.success {
+.notif-container {
+  margin-top: 24px;
+}
+
+.notif.success {
     background-color: #d4edda;
     color: #155724;
     border-left: 4px solid #28a745;
 }
 
-.notification.error {
+.notif.error {
     background-color: #f8d7da;
     color: #721c24;
     border-left: 4px solid #dc3545;
 }
 
-.notification.info {
+.notif.info {
     background-color: #d1ecf1;
     color: #0c5460;
     border-left: 4px solid #17a2b8;
 }
 
-.notification.warning {
+.notif.warning {
     background-color: #fff3cd;
     color: #856404;
     border-left: 4px solid #ffc107;
 }
 
-.notification-close {
+.notif-close {
     float: right;
     font-size: 18px;
     font-weight: bold;
@@ -48,7 +52,7 @@
     padding: 0;
 }
 
-.notification-close:hover {
+.notif-close:hover {
     opacity: 1;
 }
 
