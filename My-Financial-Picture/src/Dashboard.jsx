@@ -1,15 +1,57 @@
 import './Dashboard.css'
-import Navbar from './components/Navbar'
 import SummaryCard from './components/SummaryCard'
 import SpendingChart from './components/SpendingChart'
 import CategoryChart from './components/CategoryChart'
 import Transactions from './components/Transactions'
 import Notifications from './components/Notifications'
 import { useAuth } from './context/AuthContext'
+import QuickStart from "./components/Quickstart"
+import { useEffect, useState, useCallback } from "react"
+import api from "./lib/api"
 
 function Dashboard() {
 
-  const { firstName } = useAuth()
+  const { firstName, userId } = useAuth()
+
+  const [qsOpen, setQsOpen] = useState(false);
+  const [initialStep, setInitialStep] = useState(1);
+  const [loadingQS, setLoadingQS] = useState(false);
+
+  const computeInitialStep = (missing) => {
+    if (!missing) return 1;
+    if (missing.institutions) return 1;
+    if (missing.budgets) return 2;
+    return 3;
+  };
+
+  const refreshQS = useCallback(async () => {
+    if (!userId) return;
+    try {
+      setLoadingQS(true);
+      const { data } = await api.get(`/users/${userId}/needs-quickstart`);
+      setInitialStep(computeInitialStep(data.missing));
+      setQsOpen(Boolean(data.needs_quickstart));
+    } catch (e) {
+      console.warn("needs-quickstart failed:", e?.response?.data || e.message);
+      setQsOpen(false);
+    } finally {
+      setLoadingQS(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    refreshQS();
+  }, [refreshQS]);
+
+  const handleQSSaved = async () => {
+    await refreshQS();
+  };
+
+  const handleQSClose = async () => {
+    await refreshQS()
+  }
+
+  const monthName = new Date().toLocaleString("default", { month: "long" })
 
   return (
     <div className="dashboard">
@@ -32,6 +74,13 @@ function Dashboard() {
         <Transactions />
         <Notifications />
       </div>
+
+      <QuickStart
+        open={qsOpen && !loadingQS}
+        initialStep={initialStep}
+        onSaved={handleQSSaved}
+        onClose={handleQSClose}
+      />
     </div>
   );
 }
